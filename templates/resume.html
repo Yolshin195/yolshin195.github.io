@@ -396,54 +396,16 @@
                 <section class="section">
                     <h2 class="section-title">{{ t.technical_skills }}</h2>
                     <div class="skills-grid">
+                        {% for category in &resume.technical_skills.category_skills %}
                         <div class="skill-category">
-                            <div class="skill-category-title">{{ t.languages }}</div>
+                            <div class="skill-category-title">{{ category.name }}</div>
                             <div class="skill-tags">
-                                {% for lang in &resume.technical_skills.languages %}
-                                <span class="skill-tag">{{ lang }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">{{ t.backend }}</div>
-                            <div class="skill-tags">
-                                {% for skill in &resume.technical_skills.backend %}
+                                {% for skill in &category.skills %}
                                 <span class="skill-tag">{{ skill }}</span>
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">{{ t.concurrency }}</div>
-                            <div class="skill-tags">
-                                {% for skill in &resume.technical_skills.concurrency %}
-                                <span class="skill-tag">{{ skill }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">{{ t.databases }}</div>
-                            <div class="skill-tags">
-                                {% for skill in &resume.technical_skills.databases %}
-                                <span class="skill-tag">{{ skill }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">{{ t.devops }}</div>
-                            <div class="skill-tags">
-                                {% for skill in &resume.technical_skills.devops %}
-                                <span class="skill-tag">{{ skill }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">{{ t.testing }}</div>
-                            <div class="skill-tags">
-                                {% for skill in &resume.technical_skills.testing %}
-                                <span class="skill-tag">{{ skill }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </section>
 
@@ -466,7 +428,8 @@
                     </div>
                     {% endfor %}
                 </section>
-
+                
+                {% if resume.projects.len() > 0 %}
                 <section class="section">
                     <h2 class="section-title">{{ t.projects }}</h2>
                     {% for project in &resume.projects %}
@@ -489,6 +452,7 @@
                     </div>
                     {% endfor %}
                 </section>
+                {% endif %}
 
                 <section class="section">
                     <h2 class="section-title">{{ t.education }}</h2>

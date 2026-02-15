@@ -4,6 +4,7 @@ use crate::models::{Language, Resume};
 
 pub trait ResumeRepository {
     fn get_resume(&self, lang: &Language) -> Option<Resume>;
+    fn load_resume(&self, lang: &Language) -> Result<Resume, String>;
 }
 
 #[derive(Debug, Clone)]
@@ -24,7 +25,7 @@ impl TomlResumeRepository {
         Ok(repo)
     }
 
-    fn load_resume(&self, lang: Language) -> Result<Resume, String> {
+    fn load_resume(&self, lang: &Language) -> Result<Resume, String> {
         let path = format!("{}/resume_{}.toml", self.assets_path, lang);
         let cv_toml = std::fs::read_to_string(&path)
             .map_err(|err| format!("Failed to read cv.toml: {err}"))?;
@@ -42,7 +43,7 @@ impl TomlResumeRepository {
         ];
 
         for lang in langs {
-            match self.load_resume(lang.clone()) {
+            match self.load_resume(&lang) {
                 Ok(resume) => {
                     self.resume_map.insert(lang, resume);
                 },
@@ -62,6 +63,10 @@ impl ResumeRepository for TomlResumeRepository {
     fn get_resume(&self, lang: &Language) -> Option<Resume> {
         self.resume_map.get(lang).cloned()
     }
+
+    fn load_resume(&self, lang: &Language) -> Result<Resume, String> {
+        self.load_resume(lang)
+    }
 }
 
 #[cfg(test)]
@@ -71,7 +76,7 @@ mod tests {
     #[test]
     fn test_cv_toml_reader() {
         let repo = TomlResumeRepository::new("assets".into()).unwrap();
-        let resume = repo.get_resume(Language::Russian);
+        let resume = repo.get_resume(&Language::Russian);
         
         assert!(resume.is_some());
     }

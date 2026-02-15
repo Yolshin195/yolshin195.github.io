@@ -11,12 +11,34 @@ linkedin = "https://linkedin.com/in/alekseydev"
 
 
 [technical_skills]
-languages = ["Rust", "python", "JavaScript"]
-backend = ["Axum", "Tonic", "REST"]
-concurrency = ["Tokio", "Arc", "Mutex"]
-databases = ["PostgreSQL"]
-devops = ["Docker", "CI/CD"]
-testing = ["cargo test", "integration tests"]
+
+[[technical_skills.category_skills]]
+name = "🦀 Rust"
+skills = ["Rust", "Tokio", "Axum", "sqlx"]
+
+[[technical_skills.category_skills]]
+name = "🐍 Python"
+skills = ["FastAPI", "SqlAlchemy"]
+
+[[technical_skills.category_skills]]
+name = "Backend"
+skills = ["Axum", "Tonic", "REST"]
+
+[[technical_skills.category_skills]]
+name = "Concurrency"
+skills = ["Tokio", "Arc", "Mutex"]
+
+[[technical_skills.category_skills]]
+name = "Databases"
+skills = ["PostgreSQL", "Redis"]
+
+[[technical_skills.category_skills]]
+name = "DevOps"
+skills = ["Docker", "CI/CD"]
+
+[[technical_skills.category_skills]]
+name = "Testing"
+skills = ["cargo test", "integration tests"]
 
 
 [[work_experience]]
@@ -82,6 +104,6 @@ end_year = 2022
 
 
 [additional]
-english_level = "B2"
+english_level = "B1"
 relocation_ready = true
 interests = ["High-load systems", "Microservices"]

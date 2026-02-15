@@ -159,6 +159,7 @@ pub struct Resume {
     pub summary: String,
     pub technical_skills: TechnicalSkills,
     pub work_experience: Vec<WorkExperience>,
+    #[serde(default)]
     pub projects: Vec<Project>,
     pub education: Vec<Education>,
     pub additional: Option<Additional>,
@@ -177,12 +178,13 @@ pub struct PersonalInfo {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TechnicalSkills {
-    pub languages: Vec<String>,
-    pub backend: Vec<String>,
-    pub concurrency: Vec<String>,
-    pub databases: Vec<String>,
-    pub devops: Vec<String>,
-    pub testing: Vec<String>,
+    pub category_skills: Vec<TechnicalSkillsCategory>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TechnicalSkillsCategory {
+    pub name: String,
+    pub skills: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -236,12 +238,32 @@ mod tests {
             },
             summary: "Rust backend developer with experience in Axum and gRPC (tonic).".to_string(),
             technical_skills: TechnicalSkills {
-                languages: vec!["Rust".into(), "SQL".into()],
-                backend: vec!["Axum".into(), "Tonic".into(), "REST".into()],
-                concurrency: vec!["Tokio".into(), "Arc".into(), "Mutex".into()],
-                databases: vec!["PostgreSQL".into()],
-                devops: vec!["Docker".into(), "CI/CD".into()],
-                testing: vec!["cargo test".into(), "integration tests".into()],
+                category_skills: vec![
+                    TechnicalSkillsCategory {
+                        name: "Languages".into(),
+                        skills: vec!["Rust".into(), "SQL".into()],
+                    },
+                    TechnicalSkillsCategory {
+                        name: "Backend".into(),
+                        skills: vec!["Axum".into(), "Tonic".into(), "REST".into()],
+                    },
+                    TechnicalSkillsCategory {
+                        name: "Concurrency".into(),
+                        skills: vec!["Tokio".into(), "Arc".into(), "Mutex".into()],
+                    },
+                    TechnicalSkillsCategory {
+                        name: "Databases".into(),
+                        skills: vec!["PostgreSQL".into()],
+                    },
+                    TechnicalSkillsCategory {
+                        name: "DevOps".into(),
+                        skills: vec!["Docker".into(), "CI/CD".into()],
+                    },
+                    TechnicalSkillsCategory {
+                        name: "Testing".into(),
+                        skills: vec!["cargo test".into(), "integration tests".into()],
+                    },
+                ],
             },
             work_experience: vec![WorkExperience {
                 company: "Tech Company".into(),

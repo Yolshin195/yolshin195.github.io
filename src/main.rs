@@ -1,4 +1,4 @@
-use mycv::models::{Language, QueryTemplate, TemplateTranslation};
+use mycv::models::{Language, TemplateTranslation};
 use mycv::templates::{CvTemplate, HtmlTemplate};
 use mycv::repositories::ResumeRepository;
 use mycv::repositories::TomlResumeRepository;
@@ -34,10 +34,10 @@ async fn cv_heandler(
 ) -> impl IntoResponse {
     let lang = match lang {
         Some(Path(lang)) => lang,
-        None => Language::English,
+        None => Language::Russian,
     };
 
-    let resume = repo.get_resume(&lang).unwrap();
+    let resume = repo.load_resume(&lang).unwrap();
 
     let template = CvTemplate { 
         resume,
