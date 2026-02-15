@@ -27,11 +27,7 @@ fn main() {
 
         let html = template.render().expect("Failed to render template");
 
-        let output_path = if lang == Language::English {
-            "docs/index.html".to_string()
-        } else {
-            format!("docs/{}/index.html", lang)
-        };
+        let output_path = format!("docs/{}/index.html", lang);
 
         // 1️⃣ Создаём родительскую директорию
         if let Some(parent) = Path::new(&output_path).parent() {
@@ -42,6 +38,12 @@ fn main() {
         // 2️⃣ Пишем файл
         fs::write(output_path, html)
             .expect("Error writing HTML file");
+
+        if lang == Language::English {
+            // Язык по умолчанию — без префикса, копируем в корень docs
+            fs::copy("docs/en/index.html", "docs/index.html")
+                .expect("Failed to copy English resume to root");
+        }
 
     }
 

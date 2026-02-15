@@ -24,7 +24,7 @@ fn app() -> Router {
 
     Router::new()
     .route("/", get(cv_heandler))
-    .route("/cv/{lang}", get(cv_heandler))
+    .route("/{lang}", get(cv_heandler))
     .with_state(repo.clone())
 }
 
