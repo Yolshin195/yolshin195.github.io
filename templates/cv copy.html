@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ resume.personal_info.full_name }} — Resume</title>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --muted: #64748b;
+            --card: #f8fafc;
+            --accent: #f97316;
+            --accent-hover: #ea580c;
+            --border: #e2e8f0;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --card: #171717;
+            --accent: #f97316;
+            --accent-hover: #fb923c;
+            --border: #262626;
+            --card-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 50px;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 20px;
+        }
+
+        h1 { margin: 0; font-size: 42px; font-weight: 800; letter-spacing: -1px; }
+        .title-sub { font-size: 1.2rem; color: var(--accent); font-weight: 600; margin-top: 5px; }
+
+        h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+        }
+
+        h2::after {
+            content: "";
+            height: 1px;
+            flex-grow: 1;
+            background: var(--border);
+            margin-left: 15px;
+        }
+
+        .muted { color: var(--muted); font-size: 0.95rem; }
+
+        .links { margin-top: 15px; }
+        .links a {
+            color: var(--text);
+            text-decoration: none;
+            margin-right: 15px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .card {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item { margin-bottom: 10px; }
+        .skill-item strong { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; margin-bottom: 5px; }
+        
+        .badge-container { display: flex; flex-wrap: wrap; gap: 6px; }
+        .badge {
+            background: var(--border);
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .theme-toggle {
+            background: var(--card);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<header>
+    <div>
+        <h1>{{ resume.personal_info.full_name }}</h1>
+        <div class="title-sub">{{ resume.personal_info.title }}</div>
+        <div class="muted">{{ resume.personal_info.location }}</div>
+
+        <div class="links">
+            <a href="mailto:{{ resume.personal_info.email }}">Email</a>
+            {% if let Some(github) = resume.personal_info.github %}
+                <a href="{{ github }}">GitHub</a>
+            {% endif %}
+            {% if let Some(linkedin) = resume.personal_info.linkedin %}
+                <a href="{{ linkedin }}">LinkedIn</a>
+            {% endif %}
+        </div>
+    </div>
+    <select class="theme-toggle" id="themeSwitcher">
+        <option value="dark">🌙 Dark</option>
+        <option value="light">☀️ Light</option>
+        <option value="auto">🌓 Auto</option>
+    </select>
+</header>
+
+<section>
+    <h2>Summary</h2>
+    <p>{{ resume.summary }}</p>
+</section>
+
+<section>
+    <h2>Technical Skills</h2>
+    <div class="skills-grid card">
+        <div class="skill-item">
+            <strong>Languages</strong>
+            <div class="badge-container">
+                {% for s in resume.technical_skills.languages %}<span class="badge">{{ s }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="skill-item">
+            <strong>Backend</strong>
+            <div class="badge-container">
+                {% for s in resume.technical_skills.backend %}<span class="badge">{{ s }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="skill-item">
+            <strong>Databases</strong>
+            <div class="badge-container">
+                {% for s in resume.technical_skills.databases %}<span class="badge">{{ s }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="skill-item">
+            <strong>DevOps</strong>
+            <div class="badge-container">
+                {% for s in resume.technical_skills.devops %}<span class="badge">{{ s }}</span>{% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Work Experience</h2>
+    {% for job in resume.work_experience %}
+    <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+            <strong>{{ job.position }}</strong>
+            <span class="muted">{{ job.start_date }} — {% if let Some(end) = job.end_date %}{{ end }}{% else %}Present{% endif %}</span>
+        </div>
+        <div style="color: var(--accent); font-weight: 600;">{{ job.company }}</div>
+        <ul style="margin-top: 10px;">
+            {% for r in job.responsibilities %}
+                <li>{{ r }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</section>
+
+<section>
+    <h2>Education</h2>
+    {% for edu in resume.education %}
+    <div class="card" style="padding: 15px 24px;">
+        <div style="display: flex; justify-content: space-between;">
+            <strong>{{ edu.institution }}</strong>
+            <span class="muted">{{ edu.start_year }} — {% if let Some(end) = edu.end_year %}{{ end }}{% else %}Present{% endif %}</span>
+        </div>
+        <div>{{ edu.degree }}</div>
+    </div>
+    {% endfor %}
+</section>
+
+{% if let Some(add) = resume.additional %}
+<section>
+    <h2>Additional</h2>
+    <div class="card">
+        {% if let Some(eng) = add.english_level %}
+            <div><strong>English:</strong> {{ eng }}</div>
+        {% endif %}
+        {% if let Some(interests) = add.interests %}
+            <div style="margin-top: 5px;">
+                <strong>Interests:</strong> {{ interests.join(", ") }}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+</div>
+
+<script>
+    const root = document.documentElement;
+    const select = document.getElementById("themeSwitcher");
+
+    function applyTheme(theme) {
+        if (theme === "auto") {
+            const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            root.setAttribute("data-theme", systemDark ? "dark" : "light");
+        } else {
+            root.setAttribute("data-theme", theme);
+        }
+    }
+
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    select.value = savedTheme;
+    applyTheme(savedTheme);
+
+    select.addEventListener("change", (e) => {
+        applyTheme(e.target.value);
+        localStorage.setItem("theme", e.target.value);
+    });
+</script>
+</body>
+</html>

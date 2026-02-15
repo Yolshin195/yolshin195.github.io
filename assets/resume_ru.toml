@@ -1,0 +1,87 @@
+summary = "Rust backend developer with experience in Axum and gRPC (tonic). Focused on clean architecture and production-ready services."
+
+[personal_info]
+full_name = "Алексей"
+title = "Rust Backend Developer"
+location = "Бангкок, Таиланд"
+email = "aleksey@example.com"
+telegram = "@alekseydev"
+github = "https://github.com/alekseydev"
+linkedin = "https://linkedin.com/in/alekseydev"
+
+
+[technical_skills]
+languages = ["Rust", "python", "JavaScript"]
+backend = ["Axum", "Tonic", "REST"]
+concurrency = ["Tokio", "Arc", "Mutex"]
+databases = ["PostgreSQL"]
+devops = ["Docker", "CI/CD"]
+testing = ["cargo test", "integration tests"]
+
+
+[[work_experience]]
+company = "Tech Company"
+position = "Rust Backend Developer"
+start_date = "2024-01"
+end_date = "2025-01"
+
+responsibilities = [
+  "Developed gRPC services using tonic",
+  "Built REST APIs with Axum",
+  "Optimized Docker images (2GB -> 150MB)",
+  "Configured CI/CD pipelines"
+]
+
+
+[[work_experience]]
+company = "FinTech Startup"
+position = "Backend Developer"
+start_date = "2023-03"
+end_date = "2023-12"
+
+responsibilities = [
+  "Implemented REST microservices in Rust",
+  "Integrated PostgreSQL and Redis",
+  "Improved API performance by 30%",
+  "Wrote integration and unit tests"
+]
+
+
+[[work_experience]]
+company = "Outsource Company"
+position = "Junior Backend Developer"
+start_date = "2022-06"
+end_date = "2023-02"
+
+responsibilities = [
+  "Maintained legacy backend services",
+  "Refactored monolith into modular architecture",
+  "Worked with Docker and deployment pipelines",
+  "Collaborated in Agile team"
+]
+
+
+[[projects]]
+name = "Accounting Category Service"
+description = "gRPC CRUD service for category management"
+stack = ["Rust", "Tonic", "PostgreSQL", "Docker"]
+
+highlights = [
+  "Thread-safe state with Arc<Mutex<_>>",
+  "Multi-stage Docker build"
+]
+
+github_url = "https://github.com/alekseydev/accounting-category"
+
+
+[[education]]
+degree = "Bachelor of Computer Science"
+institution = "University Name"
+start_year = 2018
+end_year = 2022
+
+
+[additional]
+english_level = "B2"
+relocation_ready = true
+interests = ["High-load systems", "Microservices"]

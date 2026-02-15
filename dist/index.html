@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aleksey Dev - Rust Backend Developer</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-muted: #6c757d;
+            --accent-rust: #ce422b;
+            --accent-rust-light: #f74c00;
+            --border-color: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --text-primary: #e6edf3;
+            --text-secondary: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent-rust: #f74c00;
+            --accent-rust-light: #ff6b35;
+            --border-color: #30363d;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            background: var(--bg-primary);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .control-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-rust);
+            color: white;
+            border-color: var(--accent-rust);
+        }
+
+        .control-btn.active {
+            background: var(--accent-rust);
+            color: white;
+            border-color: var(--accent-rust);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .resume-paper {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--accent-rust) 0%, var(--accent-rust-light) 100%);
+            color: white;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .name {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .title {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.95em;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contact-item a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.95;
+            transition: opacity 0.2s;
+        }
+
+        .contact-item a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--accent-rust);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-rust);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary {
+            color: var(--text-secondary);
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-category {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-rust);
+        }
+
+        .skill-category-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            border: 1px solid var(--border-color);
+        }
+
+        .experience-item, .project-item, .education-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .experience-item:last-child, .project-item:last-child, .education-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .experience-header, .project-header, .education-header {
+            margin-bottom: 12px;
+        }
+
+        .experience-title, .project-name, .education-degree {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .company, .institution {
+            color: var(--accent-rust);
+            font-weight: 500;
+        }
+
+        .date-range, .project-stack {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+
+        .responsibilities, .highlights {
+            margin-top: 12px;
+        }
+
+        .responsibilities li, .highlights li {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 8px;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .project-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--accent-rust);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .project-link:hover {
+            text-decoration: underline;
+        }
+
+        .additional-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .additional-item {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .additional-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .additional-value {
+            color: var(--text-secondary);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .controls {
+                display: none;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .resume-paper {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                top: 10px;
+                right: 10px;
+                flex-direction: column;
+            }
+            .name {
+                font-size: 2em;
+            }
+            .title {
+                font-size: 1.1em;
+            }
+            .contact-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <select id="langSelector" class="control-btn">
+            <option value="en" selected>English</option>
+            <option value="ru" >Русский</option>
+            <option value="th" >ไทย</option>
+        </select>
+        <button class="control-btn" data-theme="light">☀️</button>
+        <button class="control-btn" data-theme="auto">🌓</button>
+        <button class="control-btn" data-theme="dark">🌙</button>
+    </div>
+
+    <div class="container">
+        <div class="resume-paper">
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="name">Aleksey Dev</h1>
+                    <div class="title">Rust Backend Developer</div>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            📍 Bangkok, Thailand
+                        </div>
+                        <div class="contact-item">
+                            ✉️ <a href="mailto:aleksey@example.com">aleksey@example.com</a>
+                        </div>
+                        
+                        <div class="contact-item">
+                            📱 <a href="https://t.me/alekseydev" target="_blank">@alekseydev</a>
+                        </div>
+                        
+                        
+                        <div class="contact-item">
+                            💻 <a href="https://github.com/alekseydev" target="_blank">GitHub</a>
+                        </div>
+                        
+                        
+                        <div class="contact-item">
+                            🔗 <a href="https://linkedin.com/in/alekseydev" target="_blank">LinkedIn</a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </header>
+
+            <div class="content">
+                <section class="section">
+                    <h2 class="section-title">Professional Summary</h2>
+                    <p class="summary">Rust backend developer with experience in Axum and gRPC (tonic). Focused on clean architecture and production-ready services.</p>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">Technical Skills</h2>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <div class="skill-category-title">Languages</div>
+                            <div class="skill-tags">
+                                
+                                <span class="skill-tag">Rust</span>
+                                
+                                <span class="skill-tag">python</span>
+                                
+                                <span class="skill-tag">JavaScript</span>
+                                
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">Backend</div>
+                            <div class="skill-tags">
+                                
+                                <span class="skill-tag">Axum</span>
+                                
+                                <span class="skill-tag">Tonic</span>
+                                
+                                <span class="skill-tag">REST</span>
+                                
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">Concurrency</div>
+                            <div class="skill-tags">
+                                
+                                <span class="skill-tag">Tokio</span>
+                                
+                                <span class="skill-tag">Arc</span>
+                                
+                                <span class="skill-tag">Mutex</span>
+                                
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">Databases</div>
+                            <div class="skill-tags">
+                                
+                                <span class="skill-tag">PostgreSQL</span>
+                                
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">DevOps &#38; Tools</div>
+                            <div class="skill-tags">
+                                
+                                <span class="skill-tag">Docker</span>
+                                
+                                <span class="skill-tag">CI/CD</span>
+                                
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">Testing</div>
+                            <div class="skill-tags">
+                                
+                                <span class="skill-tag">cargo test</span>
+                                
+                                <span class="skill-tag">integration tests</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">Work Experience</h2>
+                    
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">Rust Backend Developer</div>
+                            <div class="company">Tech Company</div>
+                            <div class="date-range">
+                                2024-01 - 2025-01
+                            </div>
+                        </div>
+                        <ul class="responsibilities">
+                            
+                            <li>Developed gRPC services using tonic</li>
+                            
+                            <li>Built REST APIs with Axum</li>
+                            
+                            <li>Optimized Docker images (2GB -&#62; 150MB)</li>
+                            
+                            <li>Configured CI/CD pipelines</li>
+                            
+                        </ul>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">Backend Developer</div>
+                            <div class="company">FinTech Startup</div>
+                            <div class="date-range">
+                                2023-03 - 2023-12
+                            </div>
+                        </div>
+                        <ul class="responsibilities">
+                            
+                            <li>Implemented REST microservices in Rust</li>
+                            
+                            <li>Integrated PostgreSQL and Redis</li>
+                            
+                            <li>Improved API performance by 30%</li>
+                            
+                            <li>Wrote integration and unit tests</li>
+                            
+                        </ul>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">Junior Backend Developer</div>
+                            <div class="company">Outsource Company</div>
+                            <div class="date-range">
+                                2022-06 - 2023-02
+                            </div>
+                        </div>
+                        <ul class="responsibilities">
+                            
+                            <li>Maintained legacy backend services</li>
+                            
+                            <li>Refactored monolith into modular architecture</li>
+                            
+                            <li>Worked with Docker and deployment pipelines</li>
+                            
+                            <li>Collaborated in Agile team</li>
+                            
+                        </ul>
+                    </div>
+                    
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">Projects</h2>
+                    
+                    <div class="project-item">
+                        <div class="project-header">
+                            <div class="project-name">Accounting Category Service</div>
+                            <div class="project-stack">
+                                Rust • Tonic • PostgreSQL • Docker
+                            </div>
+                        </div>
+                        <p class="project-description">gRPC CRUD service for category management</p>
+                        <ul class="highlights">
+                            
+                            <li>Thread-safe state with Arc&#60;Mutex&#60;_&#62;&#62;</li>
+                            
+                            <li>Multi-stage Docker build</li>
+                            
+                        </ul>
+                        
+                        <a href="https://github.com/alekseydev/accounting-category" target="_blank" class="project-link">→ View Project</a>
+                        
+                    </div>
+                    
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">Education</h2>
+                    
+                    <div class="education-item">
+                        <div class="education-header">
+                            <div class="education-degree">Bachelor of Computer Science</div>
+                            <div class="institution">University Name</div>
+                            <div class="date-range">
+                                2018 - 2022
+                            </div>
+                        </div>
+                    </div>
+                    
+                </section>
+
+                
+                <section class="section">
+                    <h2 class="section-title">Additional Information</h2>
+                    <div class="additional-grid">
+                        
+                        <div class="additional-item">
+                            <div class="additional-label">English Level</div>
+                            <div class="additional-value">B2</div>
+                        </div>
+                        
+                        
+                        <div class="additional-item">
+                            <div class="additional-label">Relocation</div>
+                            <div class="additional-value">Yes</div>
+                        </div>
+                        
+                        
+                        <div class="additional-item">
+                            <div class="additional-label">Interests</div>
+                            <div class="additional-value">
+                                High-load systems, Microservices
+                            </div>
+                        </div>
+                        
+                    </div>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme management
+        const html = document.documentElement;
+        const themeButtons = document.querySelectorAll('[data-theme]');
+        
+        function getPreferredTheme() {
+            const saved = localStorage.getItem('theme');
+            if (saved) return saved;
+            return 'auto';
+        }
+
+        function getEffectiveTheme(theme) {
+            if (theme === 'auto') {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            return theme;
+        }
+
+        function applyTheme(theme) {
+            const effective = getEffectiveTheme(theme);
+            html.setAttribute('data-theme', effective);
+            localStorage.setItem('theme', theme);
+            
+            themeButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === theme);
+            });
+        }
+
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                applyTheme(btn.dataset.theme);
+            });
+        });
+
+        // Initialize theme
+        applyTheme(getPreferredTheme());
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            const current = localStorage.getItem('theme');
+            if (current === 'auto') {
+                applyTheme('auto');
+            }
+        });
+
+        // Language selector
+        const langSelector = document.getElementById('langSelector');
+        langSelector.addEventListener('change', (e) => {
+            const lang = e.target.value;
+
+            if (lang === 'en') {
+                // Английский — без префикса
+                window.location.href = '/';
+            } else {
+                window.location.href = `/cv/${lang}`;
+            }
+        });
+    </script>
+</body>
+</html>

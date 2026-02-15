@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ resume.personal_info.full_name }} - {{ resume.personal_info.title }}</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-muted: #6c757d;
+            --accent-rust: #ce422b;
+            --accent-rust-light: #f74c00;
+            --border-color: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --text-primary: #e6edf3;
+            --text-secondary: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent-rust: #f74c00;
+            --accent-rust-light: #ff6b35;
+            --border-color: #30363d;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            background: var(--bg-primary);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .control-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-rust);
+            color: white;
+            border-color: var(--accent-rust);
+        }
+
+        .control-btn.active {
+            background: var(--accent-rust);
+            color: white;
+            border-color: var(--accent-rust);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .resume-paper {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--accent-rust) 0%, var(--accent-rust-light) 100%);
+            color: white;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .name {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .title {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.95em;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contact-item a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.95;
+            transition: opacity 0.2s;
+        }
+
+        .contact-item a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--accent-rust);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-rust);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary {
+            color: var(--text-secondary);
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-category {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-rust);
+        }
+
+        .skill-category-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            border: 1px solid var(--border-color);
+        }
+
+        .experience-item, .project-item, .education-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .experience-item:last-child, .project-item:last-child, .education-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .experience-header, .project-header, .education-header {
+            margin-bottom: 12px;
+        }
+
+        .experience-title, .project-name, .education-degree {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .company, .institution {
+            color: var(--accent-rust);
+            font-weight: 500;
+        }
+
+        .date-range, .project-stack {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+
+        .responsibilities, .highlights {
+            margin-top: 12px;
+        }
+
+        .responsibilities li, .highlights li {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 8px;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .project-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--accent-rust);
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .project-link:hover {
+            text-decoration: underline;
+        }
+
+        .additional-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .additional-item {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .additional-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .additional-value {
+            color: var(--text-secondary);
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .controls {
+                display: none;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .resume-paper {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                top: 10px;
+                right: 10px;
+                flex-direction: column;
+            }
+            .name {
+                font-size: 2em;
+            }
+            .title {
+                font-size: 1.1em;
+            }
+            .contact-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <select id="langSelector" class="control-btn">
+            <option value="en" {% if lang == "en" %}selected{% endif %}>English</option>
+            <option value="ru" {% if lang == "ru" %}selected{% endif %}>Русский</option>
+            <option value="th" {% if lang == "th" %}selected{% endif %}>ไทย</option>
+        </select>
+        <button class="control-btn" data-theme="light">☀️</button>
+        <button class="control-btn" data-theme="auto">🌓</button>
+        <button class="control-btn" data-theme="dark">🌙</button>
+    </div>
+
+    <div class="container">
+        <div class="resume-paper">
+            <header class="header">
+                <div class="header-content">
+                    <h1 class="name">{{ resume.personal_info.full_name }}</h1>
+                    <div class="title">{{ resume.personal_info.title }}</div>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            📍 {{ resume.personal_info.location }}
+                        </div>
+                        <div class="contact-item">
+                            ✉️ <a href="mailto:{{ resume.personal_info.email }}">{{ resume.personal_info.email }}</a>
+                        </div>
+                        {% if let Some(telegram) = &resume.personal_info.telegram %}
+                        <div class="contact-item">
+                            📱 <a href="https://t.me/{{ telegram.trim_start_matches('@') }}" target="_blank">{{ telegram }}</a>
+                        </div>
+                        {% endif %}
+                        {% if let Some(github) = &resume.personal_info.github %}
+                        <div class="contact-item">
+                            💻 <a href="{{ github }}" target="_blank">GitHub</a>
+                        </div>
+                        {% endif %}
+                        {% if let Some(linkedin) = &resume.personal_info.linkedin %}
+                        <div class="contact-item">
+                            🔗 <a href="{{ linkedin }}" target="_blank">LinkedIn</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </header>
+
+            <div class="content">
+                <section class="section">
+                    <h2 class="section-title">{{ t.summary }}</h2>
+                    <p class="summary">{{ resume.summary }}</p>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">{{ t.technical_skills }}</h2>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <div class="skill-category-title">{{ t.languages }}</div>
+                            <div class="skill-tags">
+                                {% for lang in &resume.technical_skills.languages %}
+                                <span class="skill-tag">{{ lang }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">{{ t.backend }}</div>
+                            <div class="skill-tags">
+                                {% for skill in &resume.technical_skills.backend %}
+                                <span class="skill-tag">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">{{ t.concurrency }}</div>
+                            <div class="skill-tags">
+                                {% for skill in &resume.technical_skills.concurrency %}
+                                <span class="skill-tag">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">{{ t.databases }}</div>
+                            <div class="skill-tags">
+                                {% for skill in &resume.technical_skills.databases %}
+                                <span class="skill-tag">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">{{ t.devops }}</div>
+                            <div class="skill-tags">
+                                {% for skill in &resume.technical_skills.devops %}
+                                <span class="skill-tag">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <div class="skill-category-title">{{ t.testing }}</div>
+                            <div class="skill-tags">
+                                {% for skill in &resume.technical_skills.testing %}
+                                <span class="skill-tag">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">{{ t.work_experience }}</h2>
+                    {% for exp in &resume.work_experience %}
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="experience-title">{{ exp.position }}</div>
+                            <div class="company">{{ exp.company }}</div>
+                            <div class="date-range">
+                                {{ exp.start_date }} - {% if let Some(end) = &exp.end_date %}{{ end }}{% else %}{{ t.present }}{% endif %}
+                            </div>
+                        </div>
+                        <ul class="responsibilities">
+                            {% for resp in &exp.responsibilities %}
+                            <li>{{ resp }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">{{ t.projects }}</h2>
+                    {% for project in &resume.projects %}
+                    <div class="project-item">
+                        <div class="project-header">
+                            <div class="project-name">{{ project.name }}</div>
+                            <div class="project-stack">
+                                {% for tech in &project.stack %}{{ tech }}{% if !loop.last %} • {% endif %}{% endfor %}
+                            </div>
+                        </div>
+                        <p class="project-description">{{ project.description }}</p>
+                        <ul class="highlights">
+                            {% for highlight in &project.highlights %}
+                            <li>{{ highlight }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% if let Some(url) = &project.github_url %}
+                        <a href="{{ url }}" target="_blank" class="project-link">→ {{ t.view_project }}</a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">{{ t.education }}</h2>
+                    {% for edu in &resume.education %}
+                    <div class="education-item">
+                        <div class="education-header">
+                            <div class="education-degree">{{ edu.degree }}</div>
+                            <div class="institution">{{ edu.institution }}</div>
+                            <div class="date-range">
+                                {{ edu.start_year }} - {% if let Some(end) = edu.end_year %}{{ end }}{% else %}{{ t.present }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </section>
+
+                {% if let Some(additional) = &resume.additional %}
+                <section class="section">
+                    <h2 class="section-title">{{ t.additional }}</h2>
+                    <div class="additional-grid">
+                        {% if let Some(english) = &additional.english_level %}
+                        <div class="additional-item">
+                            <div class="additional-label">{{ t.english_level }}</div>
+                            <div class="additional-value">{{ english }}</div>
+                        </div>
+                        {% endif %}
+                        {% if let Some(relocation) = additional.relocation_ready %}
+                        <div class="additional-item">
+                            <div class="additional-label">{{ t.relocation }}</div>
+                            <div class="additional-value">{% if relocation %}{{ t.yes }}{% else %}{{ t.no }}{% endif %}</div>
+                        </div>
+                        {% endif %}
+                        {% if let Some(interests) = &additional.interests %}
+                        <div class="additional-item">
+                            <div class="additional-label">{{ t.interests }}</div>
+                            <div class="additional-value">
+                                {% for interest in interests %}{{ interest }}{% if !loop.last %}, {% endif %}{% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </section>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme management
+        const html = document.documentElement;
+        const themeButtons = document.querySelectorAll('[data-theme]');
+        
+        function getPreferredTheme() {
+            const saved = localStorage.getItem('theme');
+            if (saved) return saved;
+            return 'auto';
+        }
+
+        function getEffectiveTheme(theme) {
+            if (theme === 'auto') {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            return theme;
+        }
+
+        function applyTheme(theme) {
+            const effective = getEffectiveTheme(theme);
+            html.setAttribute('data-theme', effective);
+            localStorage.setItem('theme', theme);
+            
+            themeButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === theme);
+            });
+        }
+
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                applyTheme(btn.dataset.theme);
+            });
+        });
+
+        // Initialize theme
+        applyTheme(getPreferredTheme());
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            const current = localStorage.getItem('theme');
+            if (current === 'auto') {
+                applyTheme('auto');
+            }
+        });
+
+        // Language selector
+        const langSelector = document.getElementById('langSelector');
+        langSelector.addEventListener('change', (e) => {
+            const lang = e.target.value;
+
+            if (lang === 'en') {
+                // Английский — без префикса
+                window.location.href = '/';
+            } else {
+                window.location.href = `/cv/${lang}`;
+            }
+        });
+    </script>
+</body>
+</html>
