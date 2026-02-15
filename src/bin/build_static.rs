@@ -28,9 +28,9 @@ fn main() {
         let html = template.render().expect("Failed to render template");
 
         let output_path = if lang == Language::English {
-            "dist/index.html".to_string()
+            "docs/index.html".to_string()
         } else {
-            format!("dist/{}/index.html", lang)
+            format!("docs/{}/index.html", lang)
         };
 
         // 1️⃣ Создаём родительскую директорию
