@@ -3,662 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aleksey Dev - Rust Backend Developer</title>
+    <title>Aleksey Dev | Rust Backend Developer</title>
     <style>
         :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --text-primary: #1a1a1a;
-            --text-secondary: #4a4a4a;
-            --text-muted: #6c757d;
-            --accent-rust: #ce422b;
-            --accent-rust-light: #f74c00;
-            --border-color: #e0e0e0;
-            --shadow: rgba(0, 0, 0, 0.1);
+            /* Rust Branding Palette */
+            --primary: #f46623;
+            --primary-hover: #da4a04;
+            --accent: #2e3440;
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border: #333333;
+            --glass: rgba(30, 30, 30, 0.8);
         }
 
-        [data-theme="dark"] {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --text-primary: #e6edf3;
-            --text-secondary: #c9d1d9;
-            --text-muted: #8b949e;
-            --accent-rust: #f74c00;
-            --accent-rust-light: #ff6b35;
-            --border-color: #30363d;
-            --shadow: rgba(0, 0, 0, 0.3);
+        [data-theme="light"] {
+            --bg-body: #f9f9f9;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --border: #e5e7eb;
+            --glass: rgba(255, 255, 255, 0.8);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-print-color-adjust: exact;
         }
 
         .controls {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-            background: var(--bg-primary);
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px var(--shadow);
+            position: fixed; top: 1.5rem; right: 1.5rem; display: flex; gap: 0.5rem; z-index: 100;
+            backdrop-filter: blur(8px); background: var(--glass); padding: 0.5rem; border-radius: 1rem;
+            border: 1px solid var(--border);
         }
 
         .control-btn {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
+            background: transparent; border: none; color: var(--text-main); padding: 0.5rem 1rem;
+            border-radius: 0.5rem; cursor: pointer; font-weight: 500;
+        }
+        .control-btn:hover { background: var(--primary); color: white; }
+
+        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+
+        .resume-grid {
+            display: grid; grid-template-columns: 320px 1fr; gap: 0;
+            background: var(--bg-card); border-radius: 1.5rem; overflow: hidden;
+            border: 1px solid var(--border);
         }
 
-        .control-btn:hover {
-            background: var(--accent-rust);
-            color: white;
-            border-color: var(--accent-rust);
-        }
+        .sidebar { background: rgba(0,0,0,0.15); padding: 3rem 2rem; border-right: 1px solid var(--border); }
+        .main-content { padding: 3rem; }
 
-        .control-btn.active {
-            background: var(--accent-rust);
-            color: white;
-            border-color: var(--accent-rust);
-        }
+        .name { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; }
+        .job-title { font-size: 1.1rem; color: var(--text-muted); font-weight: 500; }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        .contact-item { display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; font-size: 0.9rem; color: var(--text-muted); }
+        .contact-item a { color: var(--text-main); text-decoration: none; }
 
-        .resume-paper {
-            background: var(--bg-primary);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px var(--shadow);
-            overflow: hidden;
-        }
+        .section { margin-bottom: 3rem; }
+        .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .section-header h2 { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); }
+        .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-        .header {
-            background: linear-gradient(135deg, var(--accent-rust) 0%, var(--accent-rust-light) 100%);
-            color: white;
-            padding: 40px;
-            position: relative;
-            overflow: hidden;
-        }
+        /* УБРАЛИ КРУЖКИ: Оставили только чистую вертикальную линию */
+        .timeline-item { position: relative; padding-left: 1.5rem; border-left: 2px solid var(--border); margin-bottom: 2rem; }
+        .timeline-item::before { display: none; } /* Полностью удалено */
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
+        .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+        .tag { background: var(--bg-body); padding: 0.25rem 0.75rem; border-radius: 0.4rem; font-size: 0.75rem; border: 1px solid var(--border); font-weight: 600; color: var(--text-muted); }
 
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
+        ul.list-details { list-style: none; margin-top: 0.5rem; }
+        ul.list-details li { position: relative; padding-left: 1.2rem; color: var(--text-muted); margin-bottom: 0.4rem; font-size: 0.95rem; }
+        ul.list-details li::before { content: "»"; position: absolute; left: 0; color: var(--primary); }
 
-        .name {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .title {
-            font-size: 1.3em;
-            opacity: 0.95;
-            font-weight: 400;
-        }
-
-        .contact-info {
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            font-size: 0.95em;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .contact-item a {
-            color: white;
-            text-decoration: none;
-            opacity: 0.95;
-            transition: opacity 0.2s;
-        }
-
-        .contact-item a:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .section {
-            margin-bottom: 35px;
-        }
-
-        .section:last-child {
-            margin-bottom: 0;
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: var(--accent-rust);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--accent-rust);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .summary {
-            color: var(--text-secondary);
-            font-size: 1.05em;
-            line-height: 1.7;
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .skill-category {
-            background: var(--bg-secondary);
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 3px solid var(--accent-rust);
-        }
-
-        .skill-category-title {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-            font-size: 0.95em;
-        }
-
-        .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .skill-tag {
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            border: 1px solid var(--border-color);
-        }
-
-        .experience-item, .project-item, .education-item {
-            margin-bottom: 25px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .experience-item:last-child, .project-item:last-child, .education-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .experience-header, .project-header, .education-header {
-            margin-bottom: 12px;
-        }
-
-        .experience-title, .project-name, .education-degree {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .company, .institution {
-            color: var(--accent-rust);
-            font-weight: 500;
-        }
-
-        .date-range, .project-stack {
-            color: var(--text-muted);
-            font-size: 0.9em;
-            margin-top: 4px;
-        }
-
-        .responsibilities, .highlights {
-            margin-top: 12px;
-        }
-
-        .responsibilities li, .highlights li {
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            padding-left: 8px;
-        }
-
-        .project-description {
-            color: var(--text-secondary);
-            margin-top: 8px;
-            font-style: italic;
-        }
-
-        .project-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: var(--accent-rust);
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-
-        .project-link:hover {
-            text-decoration: underline;
-        }
-
-        .additional-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .additional-item {
-            background: var(--bg-secondary);
-            padding: 15px;
-            border-radius: 8px;
-        }
-
-        .additional-label {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-            font-size: 0.9em;
-        }
-
-        .additional-value {
-            color: var(--text-secondary);
-        }
-
+        /* ПЕЧАТЬ И МОБИЛЬНАЯ ГЕНЕРАЦИЯ PDF */
         @media print {
-            body {
-                background: white;
+            @page { size: A4; margin: 10mm; }
+            .controls { display: none !important; }
+            .container { margin: 0; max-width: 100%; padding: 0; }
+            .resume-grid { 
+                display: block !important; 
+                border: none !important; 
+                background: white !important;
             }
-            .controls {
-                display: none;
+            .sidebar { 
+                border-right: none; 
+                border-bottom: 2px solid #eee; 
+                padding: 1rem 0 2rem 0; 
+                background: transparent !important; 
             }
-            .container {
-                max-width: 100%;
-                padding: 0;
-            }
-            .resume-paper {
-                box-shadow: none;
-            }
+            .main-content { padding: 2rem 0 !important; }
+            .section, .timeline-item { page-break-inside: avoid !important; break-inside: avoid !important; }
+            .timeline-item { border-left: 2px solid #eee; } /* Тонкая линия для печати */
+            .tag { border: 1px solid #ddd !important; background: transparent !important; color: #333 !important; }
+            .name, .section-header h2 { color: #000 !important; }
+            * { box-shadow: none !important; text-shadow: none !important; }
         }
 
-        @media (max-width: 768px) {
-            .controls {
-                top: 10px;
-                right: 10px;
-                flex-direction: column;
-            }
-            .name {
-                font-size: 2em;
-            }
-            .title {
-                font-size: 1.1em;
-            }
-            .contact-info {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .content {
-                padding: 20px;
-            }
+        @media (max-width: 900px) { 
+            .resume-grid { grid-template-columns: 1fr; border-radius: 1rem; }
+            .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
         }
     </style>
 </head>
 <body>
+
     <div class="controls">
-        <select id="langSelector" class="control-btn">
-            <option value="en" selected>English</option>
-            <option value="ru" >Русский</option>
-            <option value="th" >ไทย</option>
+        <select id="langSelector" class="control-btn" onchange="window.location.href=this.value === 'en' ? '/' : '/' + this.value">
+            <option value="en" selected>EN</option>
+            <option value="ru" >RU</option>
+            <option value="th" >TH</option>
         </select>
         <button class="control-btn" data-theme="light">☀️</button>
-        <button class="control-btn" data-theme="auto">🌓</button>
         <button class="control-btn" data-theme="dark">🌙</button>
     </div>
 
     <div class="container">
-        <div class="resume-paper">
-            <header class="header">
-                <div class="header-content">
+        <div class="resume-grid">
+            <aside class="sidebar">
+                <div class="profile-header">
                     <h1 class="name">Aleksey Dev</h1>
-                    <div class="title">Rust Backend Developer</div>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            📍 Bangkok, Thailand
-                        </div>
-                        <div class="contact-item">
-                            ✉️ <a href="mailto:aleksey@example.com">aleksey@example.com</a>
-                        </div>
-                        
-                        <div class="contact-item">
-                            📱 <a href="https://t.me/alekseydev" target="_blank">@alekseydev</a>
-                        </div>
-                        
-                        
-                        <div class="contact-item">
-                            💻 <a href="https://github.com/alekseydev" target="_blank">GitHub</a>
-                        </div>
-                        
-                        
-                        <div class="contact-item">
-                            🔗 <a href="https://linkedin.com/in/alekseydev" target="_blank">LinkedIn</a>
-                        </div>
-                        
-                    </div>
+                    <p class="job-title">Rust Backend Developer</p>
                 </div>
-            </header>
 
-            <div class="content">
+                <div class="contact-list" style="margin-top: 2rem;">
+                    <div class="contact-item">📍 Bangkok, Thailand</div>
+                    <div class="contact-item">✉️ <a href="mailto:aleksey@example.com">aleksey@example.com</a></div>
+                    <div class="contact-item">📱 @alekseydev</div>
+                </div>
+
+                <div class="section" style="margin-top: 3rem;">
+                    <div class="section-header"><h2>Technical Skills</h2></div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">🦀 Rust</p>
+                        <div class="tags">
+                            <span class="tag">Rust</span><span class="tag">Tokio</span><span class="tag">Axum</span><span class="tag">sqlx</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">🐍 Python</p>
+                        <div class="tags">
+                            <span class="tag">FastAPI</span><span class="tag">SqlAlchemy</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">Backend</p>
+                        <div class="tags">
+                            <span class="tag">Axum</span><span class="tag">Tonic</span><span class="tag">REST</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">Concurrency</p>
+                        <div class="tags">
+                            <span class="tag">Tokio</span><span class="tag">Arc</span><span class="tag">Mutex</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">Databases</p>
+                        <div class="tags">
+                            <span class="tag">PostgreSQL</span><span class="tag">Redis</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">DevOps</p>
+                        <div class="tags">
+                            <span class="tag">Docker</span><span class="tag">CI/CD</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 700; font-size: 0.8rem; margin-bottom: 0.4rem; opacity: 0.8; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">Testing</p>
+                        <div class="tags">
+                            <span class="tag">cargo test</span><span class="tag">integration tests</span>
+                        </div>
+                    </div>
+                    
+                </div>
+            </aside>
+
+            <main class="main-content">
                 <section class="section">
-                    <h2 class="section-title">Professional Summary</h2>
-                    <p class="summary">Rust backend developer with experience in Axum and gRPC (tonic). Focused on clean architecture and production-ready services.</p>
+                    <div class="section-header"><h2>Professional Summary</h2></div>
+                    <p style="color: var(--text-muted); font-size: 1.05rem;">Rust backend developer with experience in Axum and gRPC (tonic). Focused on clean architecture and production-ready services.</p>
                 </section>
 
                 <section class="section">
-                    <h2 class="section-title">Technical Skills</h2>
-                    <div class="skills-grid">
-                        <div class="skill-category">
-                            <div class="skill-category-title">Languages</div>
-                            <div class="skill-tags">
-                                
-                                <span class="skill-tag">Rust</span>
-                                
-                                <span class="skill-tag">python</span>
-                                
-                                <span class="skill-tag">JavaScript</span>
-                                
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">Backend</div>
-                            <div class="skill-tags">
-                                
-                                <span class="skill-tag">Axum</span>
-                                
-                                <span class="skill-tag">Tonic</span>
-                                
-                                <span class="skill-tag">REST</span>
-                                
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">Concurrency</div>
-                            <div class="skill-tags">
-                                
-                                <span class="skill-tag">Tokio</span>
-                                
-                                <span class="skill-tag">Arc</span>
-                                
-                                <span class="skill-tag">Mutex</span>
-                                
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">Databases</div>
-                            <div class="skill-tags">
-                                
-                                <span class="skill-tag">PostgreSQL</span>
-                                
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">DevOps &#38; Tools</div>
-                            <div class="skill-tags">
-                                
-                                <span class="skill-tag">Docker</span>
-                                
-                                <span class="skill-tag">CI/CD</span>
-                                
-                            </div>
-                        </div>
-                        <div class="skill-category">
-                            <div class="skill-category-title">Testing</div>
-                            <div class="skill-tags">
-                                
-                                <span class="skill-tag">cargo test</span>
-                                
-                                <span class="skill-tag">integration tests</span>
-                                
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="section">
-                    <h2 class="section-title">Work Experience</h2>
+                    <div class="section-header"><h2>Work Experience</h2></div>
                     
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <div class="experience-title">Rust Backend Developer</div>
-                            <div class="company">Tech Company</div>
-                            <div class="date-range">
-                                2024-01 - 2025-01
-                            </div>
+                    <div class="timeline-item">
+                        <div style="font-weight: 700; font-size: 1.2rem;">Rust Backend Developer</div>
+                        <div style="color: var(--primary); font-weight: 600;">Tech Company</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">
+                            2024-01 — 2025-01
                         </div>
-                        <ul class="responsibilities">
-                            
-                            <li>Developed gRPC services using tonic</li>
-                            
-                            <li>Built REST APIs with Axum</li>
-                            
-                            <li>Optimized Docker images (2GB -&#62; 150MB)</li>
-                            
-                            <li>Configured CI/CD pipelines</li>
-                            
+                        <ul class="list-details">
+                            <li>Developed gRPC services using tonic</li><li>Built REST APIs with Axum</li><li>Optimized Docker images (2GB -&#62; 150MB)</li><li>Configured CI/CD pipelines</li>
                         </ul>
                     </div>
                     
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <div class="experience-title">Backend Developer</div>
-                            <div class="company">FinTech Startup</div>
-                            <div class="date-range">
-                                2023-03 - 2023-12
-                            </div>
+                    <div class="timeline-item">
+                        <div style="font-weight: 700; font-size: 1.2rem;">Backend Developer</div>
+                        <div style="color: var(--primary); font-weight: 600;">FinTech Startup</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">
+                            2023-03 — 2023-12
                         </div>
-                        <ul class="responsibilities">
-                            
-                            <li>Implemented REST microservices in Rust</li>
-                            
-                            <li>Integrated PostgreSQL and Redis</li>
-                            
-                            <li>Improved API performance by 30%</li>
-                            
-                            <li>Wrote integration and unit tests</li>
-                            
+                        <ul class="list-details">
+                            <li>Implemented REST microservices in Rust</li><li>Integrated PostgreSQL and Redis</li><li>Improved API performance by 30%</li><li>Wrote integration and unit tests</li>
                         </ul>
                     </div>
                     
-                    <div class="experience-item">
-                        <div class="experience-header">
-                            <div class="experience-title">Junior Backend Developer</div>
-                            <div class="company">Outsource Company</div>
-                            <div class="date-range">
-                                2022-06 - 2023-02
-                            </div>
+                    <div class="timeline-item">
+                        <div style="font-weight: 700; font-size: 1.2rem;">Junior Backend Developer</div>
+                        <div style="color: var(--primary); font-weight: 600;">Outsource Company</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">
+                            2022-06 — 2023-02
                         </div>
-                        <ul class="responsibilities">
-                            
-                            <li>Maintained legacy backend services</li>
-                            
-                            <li>Refactored monolith into modular architecture</li>
-                            
-                            <li>Worked with Docker and deployment pipelines</li>
-                            
-                            <li>Collaborated in Agile team</li>
-                            
+                        <ul class="list-details">
+                            <li>Maintained legacy backend services</li><li>Refactored monolith into modular architecture</li><li>Worked with Docker and deployment pipelines</li><li>Collaborated in Agile team</li>
                         </ul>
-                    </div>
-                    
-                </section>
-
-                <section class="section">
-                    <h2 class="section-title">Projects</h2>
-                    
-                    <div class="project-item">
-                        <div class="project-header">
-                            <div class="project-name">Accounting Category Service</div>
-                            <div class="project-stack">
-                                Rust • Tonic • PostgreSQL • Docker
-                            </div>
-                        </div>
-                        <p class="project-description">gRPC CRUD service for category management</p>
-                        <ul class="highlights">
-                            
-                            <li>Thread-safe state with Arc&#60;Mutex&#60;_&#62;&#62;</li>
-                            
-                            <li>Multi-stage Docker build</li>
-                            
-                        </ul>
-                        
-                        <a href="https://github.com/alekseydev/accounting-category" target="_blank" class="project-link">→ View Project</a>
-                        
-                    </div>
-                    
-                </section>
-
-                <section class="section">
-                    <h2 class="section-title">Education</h2>
-                    
-                    <div class="education-item">
-                        <div class="education-header">
-                            <div class="education-degree">Bachelor of Computer Science</div>
-                            <div class="institution">University Name</div>
-                            <div class="date-range">
-                                2018 - 2022
-                            </div>
-                        </div>
                     </div>
                     
                 </section>
 
                 
                 <section class="section">
-                    <h2 class="section-title">Additional Information</h2>
-                    <div class="additional-grid">
-                        
-                        <div class="additional-item">
-                            <div class="additional-label">English Level</div>
-                            <div class="additional-value">B2</div>
+                    <div class="section-header"><h2>Projects</h2></div>
+                    
+                    <div class="timeline-item">
+                        <div style="font-weight: 700; font-size: 1.2rem;">Accounting Category Service</div>
+                        <div class="tags">
+                            <span class="tag" style="background: var(--primary); color: white; border: none;">Rust</span><span class="tag" style="background: var(--primary); color: white; border: none;">Tonic</span><span class="tag" style="background: var(--primary); color: white; border: none;">PostgreSQL</span><span class="tag" style="background: var(--primary); color: white; border: none;">Docker</span>
                         </div>
-                        
-                        
-                        <div class="additional-item">
-                            <div class="additional-label">Relocation</div>
-                            <div class="additional-value">Yes</div>
-                        </div>
-                        
-                        
-                        <div class="additional-item">
-                            <div class="additional-label">Interests</div>
-                            <div class="additional-value">
-                                High-load systems, Microservices
-                            </div>
-                        </div>
-                        
+                        <p style="margin-top: 0.6rem; font-style: italic; font-size: 0.9rem; color: var(--text-main);">gRPC CRUD service for category management</p>
+                        <ul class="list-details">
+                            <li>Thread-safe state with Arc&#60;Mutex&#60;_&#62;&#62;</li><li>Multi-stage Docker build</li>
+                        </ul>
                     </div>
+                    
                 </section>
                 
-            </div>
+
+                <section class="section">
+                    <div class="section-header"><h2>Education</h2></div>
+                    
+                    <div class="timeline-item">
+                        <div style="font-weight: 700;">Bachelor of Computer Science</div>
+                        <div style="color: var(--text-muted);">University Name</div>
+                        <div style="font-size: 0.85rem; color: var(--primary);">
+                            2018 — 2022
+                        </div>
+                    </div>
+                    
+                </section>
+
+                
+                <section class="section" style="margin-bottom: 0;">
+                    <div class="section-header"><h2>Additional Information</h2></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.95rem;">
+                        
+                        <div><strong style="color: var(--primary);">English Level:</strong> B1</div>
+                        
+                        
+                        
+                        <div><strong style="color: var(--primary);">Relocation:</strong> Yes</div>
+                        
+                    </div>
+
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <p style="font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); font-size: 0.9rem;">Interests:</p>
+                        <div class="tags">
+                            <span class="tag" style="font-weight: normal;">High-load systems</span><span class="tag" style="font-weight: normal;">Microservices</span>
+                        </div>
+                    </div>
+                    
+                </section>
+                
+            </main>
         </div>
     </div>
 
     <script>
-        // Theme management
-        const html = document.documentElement;
-        const themeButtons = document.querySelectorAll('[data-theme]');
-        
-        function getPreferredTheme() {
-            const saved = localStorage.getItem('theme');
-            if (saved) return saved;
-            return 'auto';
-        }
-
-        function getEffectiveTheme(theme) {
-            if (theme === 'auto') {
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            return theme;
-        }
-
-        function applyTheme(theme) {
-            const effective = getEffectiveTheme(theme);
-            html.setAttribute('data-theme', effective);
+        const applyTheme = (theme) => {
+            const isDark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
             localStorage.setItem('theme', theme);
-            
-            themeButtons.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.theme === theme);
-            });
-        }
-
-        themeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                applyTheme(btn.dataset.theme);
-            });
-        });
-
-        // Initialize theme
-        applyTheme(getPreferredTheme());
-
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-            const current = localStorage.getItem('theme');
-            if (current === 'auto') {
-                applyTheme('auto');
-            }
-        });
-
-        // Language selector
-        const langSelector = document.getElementById('langSelector');
-        langSelector.addEventListener('change', (e) => {
-            const lang = e.target.value;
-
-            if (lang === 'en') {
-                // Английский — без префикса
-                window.location.href = '/';
-            } else {
-                window.location.href = `/${lang}`;
-            }
-        });
+        };
+        document.querySelectorAll('[data-theme]').forEach(btn => btn.addEventListener('click', () => applyTheme(btn.dataset.theme)));
+        applyTheme(localStorage.getItem('theme') || 'auto');
     </script>
 </body>
 </html>
